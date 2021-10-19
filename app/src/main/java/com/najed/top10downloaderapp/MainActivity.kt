@@ -14,8 +14,6 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.lang.Exception
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var call: Call<Feed?>
     private lateinit var feed: Feed
-    private val BASE_URL = "http://ax.itunes.apple.com"
+    private val BASE_URL = "http://ax.itunes.apple.com/"
 
     private lateinit var feedTitleTextView: TextView
     private lateinit var appsRecyclerView: RecyclerView
