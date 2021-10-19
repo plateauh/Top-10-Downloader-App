@@ -2,6 +2,9 @@ package com.najed.top10downloaderapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -40,21 +43,46 @@ class MainActivity : AppCompatActivity() {
         updateBtn = findViewById(R.id.update_btn)
         updateBtn.setOnClickListener {
             CoroutineScope(IO).launch {
-                setData()
+                setData(10)
             }
-        }
-
-        CoroutineScope(IO).launch {
-            setData()
         }
     }
 
-    private suspend fun setData() {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.top_10_item -> {
+                updateBtn.setOnClickListener {
+                    CoroutineScope(IO).launch {
+                        setData(10)
+                    }
+                }
+            }
+            R.id.top_100_item -> {
+                updateBtn.setOnClickListener {
+                    CoroutineScope(IO).launch {
+                        setData(100)
+                    }
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private suspend fun setData(itemsNumber: Int) {
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build()
-        call = retrofit.create(FeedAPIInterface::class.java).feed!!
+        call = when (itemsNumber) {
+            10 -> retrofit.create(FeedAPIInterface::class.java).top10feed!!
+            100 -> retrofit.create(FeedAPIInterface::class.java).top100feed!!
+            else -> retrofit.create(FeedAPIInterface::class.java).top10feed!!
+        }
         try {
             feed = call.execute().body()!!
             setUI()
